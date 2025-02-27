@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Medical System</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input,
+        select {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .patient-data,
+        .audit-logs {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            /* Ensures it stays on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-height: 80vh;
+            /* Adjust as needed */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Close button */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div id="sidebar"
+        style="height: 100%; width: 250px; position: fixed; top: 0; left: 0; background-color: #2c3e50; color: white; padding: 20px 0;">
+        <div style="text-align: center; padding: 20px;">
+            <img src="logo.jpg" alt="Logo" style="width: 50px; height: 50px;">
+            <h3 style="margin-top: 10px; font-size: 18px;">Medical Dashboard</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+            <li id="dashboard" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="dashboard.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-tachometer-alt" style="margin-right: 10px;"></i> Dashboard
+                </a>
+            </li>
+            <li id="addPatients" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="addpatients.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-plus" style="margin-right: 10px;"></i> Add Patients
+                </a>
+            </li>
+            <li id="appointments" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="appointment.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-calendar-check" style="margin-right: 10px;"></i> Appointment
+                </a>
+            </li>
+
+            <li id="viewLogs" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="#" onclick="loadAuditLogs()"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-clipboard-list" style="margin-right: 10px;"></i> View Logs
+                </a>
+            </li>
+
+            <li id="createAdmin" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="create.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-tie" style="margin-right: 10px;"></i> Create New Admin
+                </a>
+            </li>
+
+            <li id="editUsers" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="edit.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-edit" style="margin-right: 10px;"></i> Edit Users/Admin
+                </a>
+            </li>
+
+            <li id="logout" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <button onclick="Logout()"
+                    style="width: 100%; background-color: #e74c3c; color: white; padding: 10px; border: none; text-align: left; font-size: 16px; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Log Out
+                </button>
+            </li>
+        </ul>
+
+    </div>
+
+
+
+    <div class="container">
+        <h2>Medical Dashboard</h2>
+        <p id="userInfo">Welcome, <span id="fetched"></span></p>
+
+        <!-- Role Selection (Only for login-based access) -->
+        <!-- <label for="roleSelect">Select Role:</label>
+        <select id="roleSelect" onchange="checkRole()">
+            <option value="Administrator">Administrator</option>
+            <option value="Medical Director">Medical Director</option>
+        </select> -->
+
+        <!-- Search Patient -->
+        <input type="text" id="searchInput" placeholder="Enter RFID or Patient Name">
+        <button onclick="searchPatient()">Search</button>
+        <p class="error" id="error-message"></p>
+        <button onclick="logDatas()">LogDatas</button>
+        <!-- Patient Details -->
+        <div class="patient-data" id="patientData"></div>
+
+        <!-- Audit Logs (Visible only to Medical Directors) -->
+        <div class="audit-logs hidden" id="auditLogs">
+            <h3>Audit Logs</h3>
+            <button onclick="loadAuditLogs()">View Logs</button>
+
+            <!-- Audit Logs Table -->
+            <table id="logsTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>RFID</th>
+                    </tr>
+                </thead>
+                <tbody id="logsBody">
+                    <!-- Logs will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- <button onclick="getRFID()">Scan RFID</button> -->
+
+    <!-- The Modal -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Patient Details</h2>
+            <table id="patientTable">
+                <!-- Table will be filled dynamically -->
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        //new db details
+
+  //        const firebaseConfig = {
+  //   apiKey: "AIzaSyD6_LbyjZjin7T55p83qpPMqtge8epLigk",
+  //   authDomain: "medivault-a4d3e.firebaseapp.com",
+  //   projectId: "medivault-a4d3e",
+  //   storageBucket: "medivault-a4d3e.firebasestorage.app",
+  //   messagingSenderId: "156671952895",
+  //   appId: "1:156671952895:web:8a84b1917431fc186649ca",
+  //   measurementId: "G-KNW4MG613L"
+  // };
+
+
+        
+        let currentUserRole;
+        let currentUserName;
+        window.onload = function () {
+            // const loggedInUser = sessionStorage.getItem('loggedInUser');
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+            if (!loggedInUser) {
+                window.location.href = "index.html"; // Redirect to login if not logged in
+            }
+            else {
+                // const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+                console.log("Username:", loggedInUser.username);
+                console.log("Role:", loggedInUser.role);
+                currentUserRole = loggedInUser.role;  // 
+                currentUserName = loggedInUser.username;  // Default to Administrator
+                updateUIBasedOnRole(currentUserRole);
+                let element = document.getElementById("fetched");
+                if (element) {
+                    element.textContent = currentUserRole + " " + currentUserName;
+                }
+
+                getRFID();
+                updateMode();
+                access();
+            }
+        };
+
+
+
+        function access() {
+            // const role = currentUserRole; // Assuming currentUserRole is already set
+
+            const disableItems = {
+                "Administrator": [],
+                "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+                "receptionist": ["createAdmin", "editUsers", "viewLogs"],
+                "director": ["editUsers", "createAdmin", "addPatients"],
+                "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients", "appointments"],
+                "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients", "appointments"],
+            };
+
+            disableItems[currentUserRole]?.forEach(id => {
+                let item = document.getElementById(id);
+                if (item) {
+                    item.style.pointerEvents = "none"; // Disable clicking
+                    item.style.opacity = "0.5"; // Make it look disabled
+                }
+            });
+
+        }
+
+
+
+        // Logout function
+        function Logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = "index.html"; // Redirect to login after logout
+        }
+
+        function logDatas() {
+            window.location.href = "logdata.html"; // Redirect to login after logout
+        }
+
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmhaIhOWWlPYceSdtJScVIIuZP0Rb71hM",
+            authDomain: "project-iot-51262.firebaseapp.com",
+            databaseURL: "https://project-iot-51262-default-rtdb.firebaseio.com",
+            projectId: "project-iot-51262",
+            storageBucket: "project-iot-51262.appspot.com",
+            messagingSenderId: "785303672386",
+            appId: "1:785303672386:web:8fb1aaac3c34e72e87bfdb"
+        };
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Simulate user login
+        // firebase.auth().onAuthStateChanged(user => {
+        //     if (user) {
+        //         currentUserRole = user.role || 'Administrator'; // You should set user's role on login
+        //         updateUIBasedOnRole(currentUserRole);
+        //     } else {
+        //         // Handle user not logged in
+        //         console.log('No user logged in');
+        //     }
+        // });
+
+
+
+
+
+        // Update the UI based on the user's role
+        function updateUIBasedOnRole(role) {
+            //const roleSelect = document.getElementById('roleSelect');
+            const auditLogsDiv = document.getElementById('auditLogs');
+            console.log("Audits Logs Loaded");
+            if (role === "doctor") {
+                // Hide Audit Logs for doctor
+                auditLogsDiv.classList.add('hidden');
+                //  roleSelect.value = 'Administrator';
+            }
+            if (role === "receptionist") {
+                // Hide Audit Logs for recep
+                auditLogsDiv.classList.add('hidden');
+                //  roleSelect.value = 'Administrator';
+            }
+            else if (role === "Administrator") {
+                // Show Audit Logs for Administrator
+                auditLogsDiv.classList.remove('hidden');
+                //roleSelect.value = 'Medical Director';
+            } else if (role === "director") {
+                // Show Audit Logs for director
+                auditLogsDiv.classList.remove('hidden');
+                //roleSelect.value = 'Medical Director';
+            }
+        }
+
+
+        function checkRole() {
+            const role = document.getElementById("roleSelect").value;
+            const auditLogsDiv = document.getElementById("auditLogs");
+
+            if (role === "Medical Director") {
+                auditLogsDiv.classList.remove("hidden");
+            } else {
+                auditLogsDiv.classList.add("hidden");
+            }
+        }
+
+        function searchPatient() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const patientDataDiv = document.getElementById('patientData');
+            const errorMessage = document.getElementById('error-message');
+
+            patientDataDiv.innerHTML = "";
+            errorMessage.innerText = "";
+
+            if (searchInput === "") {
+                errorMessage.innerText = "Please enter an RFID or patient name.";
+                return;
+            }
+
+            database.ref("uniib_elect/medical/patients/" + searchInput).once("value", (snapshot) => {
+                if (snapshot.exists()) {
+                    displayPatientData(snapshot.val());
+                    logAction("Viewed patient record", searchInput);
+                } else {
+                    searchByName(searchInput);
+                }
+            });
+        }
+
+        function searchByName(name) {
+            const patientDataDiv = document.getElementById('patientData');
+            const errorMessage = document.getElementById('error-message');
+
+            database.ref("uniib_elect/medical/patients").once("value", (snapshot) => {
+                let found = false;
+                snapshot.forEach((childSnapshot) => {
+                    const patient = childSnapshot.val();
+                    if (patient.administrative_data.first_name.toLowerCase() === name.toLowerCase() ||
+                        patient.administrative_data.last_name.toLowerCase() === name.toLowerCase()) {
+                        displayPatientData(patient);
+                        logAction("Viewed patient record", childSnapshot.key);
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    errorMessage.innerText = "Patient not found.";
+                }
+            });
+        }
+
+        function displayPatientData(patient) {
+            const patientDataDiv = document.getElementById('patientData');
+
+            patientDataDiv.innerHTML = `
+                <h3>Patient Details</h3>
+                <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Name</strong></td>
+                            <td>${patient.administrative_data.first_name} ${patient.administrative_data.last_name}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Age</strong></td>
+                            <td>${patient.administrative_data.age}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gender</strong></td>
+                            <td>${patient.administrative_data.gender}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blood Group</strong></td>
+                            <td>${patient.administrative_data.blood_group_type} ${patient.administrative_data.rhesus_factor}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chronic Conditions</strong></td>
+                            <td>${patient.medical_data.chronic_conditions}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Allergies</strong></td>
+                            <td>${patient.medical_data.allergies}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Medical History</strong></td>
+                            <td>${patient.medical_data.medical_history}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+
+
+        }
+
+        function logAction(action, patientID) {
+            const timestamp = new Date().toISOString();
+            const user = currentUserName; //
+            const role = currentUserRole;
+
+            database.ref("uniib_elect/medical/audit_logs").push({
+                timestamp: timestamp,
+                user: user,
+                role: role,
+                action: action,
+                affected_data: patientID
+            });
+        }
+
+        function loadAuditLogs() {
+            console.log("Audits Logs Loading");
+            const logsBody = document.getElementById("logsBody");
+            logsBody.innerHTML = ""; // Clear any previous logs
+
+            database.ref("uniib_elect/medical/audit_logs").once("value", (snapshot) => {
+                snapshot.forEach((logSnapshot) => {
+                    const log = logSnapshot.val();
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${log.timestamp}</td>
+                        <td>${log.user}</td>
+                        <td>${log.action}</td>
+                        <td>${log.affected_data}</td>
+                    `;
+
+                    logsBody.appendChild(row);
+                });
+            });
+        }
+
+
+
+
+        function updateMode() {
+            const statusRef = database.ref("uniib_elect/medical_esp/");
+            statusRef.update({ mode: 0 });
+
+        }
+
+        function resetrfid() {
+            const statusRef = database.ref("uniib_elect/medical_esp/");
+            statusRef.update({ rfid: "...Waiting For Card..." });
+        }
+
+        function getRFID() {
+            const statusRef = database.ref("uniib_elect/medical_esp/");
+
+            // Listen for changes in "rfid"
+            statusRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const statusData = snapshot.val();
+                    const rfid = statusData.rfid;
+
+                    if (rfid != "...Waiting For Card...") {
+                        getDetails(rfid);
+                    }
+
+                }
+            });
+        }
+
+
+        function getDetails(rfid) {
+
+            if (!rfid) return;
+
+            database.ref("uniib_elect/medical/patients/" + rfid).once("value").then((snapshot) => {
+                if (snapshot.exists()) {
+                    const patientData = snapshot.val();
+                    const administrativeData = patientData.administrative_data;
+                    const medicalData = patientData.medical_data;
+
+                    // Extract data
+                    const firstName = administrativeData.first_name || "";
+                    const middleName = administrativeData.middle_name || "";
+                    const lastName = administrativeData.last_name || "";
+                    const fullName = `${firstName} ${middleName} ${lastName}`.trim();
+                    const address = administrativeData.address || "";
+                    const age = administrativeData.age || "";
+                    const blood_group_type = administrativeData.blood_group_type || "";
+                    const contact_number = administrativeData.contact_number || "";
+                    const gender = administrativeData.gender || "";
+                    const genotype = administrativeData.genotype || "";
+                    const relationship_status = administrativeData.relationship_status || "";
+                    const rhesus_factor = administrativeData.rhesus_factor || "";
+                    const suffix = administrativeData.suffix || "";
+                    const allergies = medicalData.allergies || "";
+                    const chronic_conditions = medicalData.chronic_conditions || "";
+                    const medical_history = medicalData.medical_history || "";
+                    const created_at = patientData.created_at || "";
+                    const updated_at = patientData.updated_at || "";
+                    const diagnosis = medicalData.diagnosis || "";
+                    const medications = medicalData.medications || "";
+                    const surgeries = medicalData.surgeries || "";
+                    const test_results = medicalData.test_results || "";
+
+                    // Display data in modal
+                    showPatientModal({
+                        fullName, address, age, blood_group_type, contact_number, gender, genotype,
+                        relationship_status, rhesus_factor, suffix, allergies, chronic_conditions,
+                        medical_history, created_at, updated_at, diagnosis,medications,
+                        surgeries,test_results
+                    });
+                } else {
+                    alert("Patient not found for this RFID!.");
+                }
+            }).catch((error) => {
+                console.error("Error fetching patient data: ", error);
+                alert("Error fetching patient data.");
+            });
+        }
+
+        function showPatientModal(data) {
+            const table = document.getElementById("patientTable");
+            table.innerHTML = ""; // Clear previous data
+
+            let tableContent = `
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Full Name</td><td>${data.fullName}</td></tr>
+        <tr><td>Gender</td><td>${data.gender}</td></tr>
+        <tr><td>Suffix</td><td>${data.suffix}</td></tr>
+    `;
+
+            if (currentUserRole === "Administrator") {
+                tableContent += `
+            <tr><td>Address</td><td>${data.address}</td></tr>
+            <tr><td>Contact Number</td><td>${data.contact_number}</td></tr>
+            <tr><td>Age</td><td>${data.age}</td></tr>
+            <tr><td>Blood Group</td><td>${data.blood_group_type}</td></tr>
+            <tr><td>Genotype</td><td>${data.genotype}</td></tr>
+            <tr><td>Relationship Status</td><td>${data.relationship_status}</td></tr>
+            <tr><td>Rhesus Factor</td><td>${data.rhesus_factor}</td></tr>
+            <tr><td>Allergies</td><td>${data.allergies}</td></tr>
+            <tr><td>Chronic Conditions</td><td>${data.chronic_conditions}</td></tr>
+            <tr><td>Medical History</td><td>${data.medical_history}</td></tr>
+            <tr><td>Created At</td><td>${data.created_at}</td></tr>
+            <tr><td>Updated At</td><td>${data.updated_at}</td></tr>
+        `;
+            } else if (currentUserRole === "doctor") {
+                tableContent += `
+            <tr><td>Age</td><td>${data.age}</td></tr>
+            <tr><td>Blood Group Type</td><td>${data.blood_group_type}</td></tr>
+            <tr><td>Genotype</td><td>${data.genotype}</td></tr>
+            <tr><td>Relationship Status</td><td>${data.relationship_status}</td></tr>
+            <tr><td>Rhesus Factor</td><td>${data.rhesus_factor}</td></tr>
+            <tr><td>Allergies</td><td>${data.allergies}</td></tr>
+            <tr><td>Chronic Conditions</td><td>${data.chronic_conditions}</td></tr>
+            <tr><td>Medical History</td><td>${data.medical_history}</td></tr>
+            <tr><td>Surgeries</td><td>${data.surgeries}</td></tr>
+            <tr><td>Medications</td><td>${data.medications}</td></tr>
+            <tr><td>Diagnosis</td><td>${data.diagnosis}</td></tr>
+            <tr><td>Test Results</td><td>${data.test_results}</td></tr>
+
+        `;
+            }
+
+            else if (currentUserRole === "receptionist") {
+                tableContent += `
+            <tr><td>Age</td><td>${data.age}</td></tr>
+            <tr><td>Address</td><td>${data.address}</td></tr>
+            <tr><td>Relationship Status</td><td>${data.relationship_status}</td></tr>
+            <tr><td>Contact Number</td><td>${data.contact_number}</td></tr>
+        `;
+            } else if (currentUserRole === "pharmacist") {
+                tableContent += `
+            <tr><td>Age</td><td>${data.age}</td></tr>
+            <tr><td>Allergies</td><td>${data.allergies}</td></tr>
+            <tr><td>Medications</td><td>${data.medications}</td></tr>
+        `;
+            } else if (currentUserRole === "labTech") {
+                tableContent += `
+            <tr><td>Diagnosis</td><td>${data.diagnosis}</td></tr>
+            <tr><td>Test Results</td><td>${data.test_results}</td></tr>
+        `;
+            }
+
+            table.innerHTML = tableContent;
+            document.getElementById("patientModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("patientModal").style.display = "none";
+            resetrfid();
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>

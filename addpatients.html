@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Medical System</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 128, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Sidebar -->
+    <div id="sidebar"
+        style="height: 100%; width: 250px; position: fixed; top: 0; left: 0; background-color: #2c3e50; color: white; padding: 20px 0;">
+        <div style="text-align: center; padding: 20px;">
+            <img src="logo.jpg" alt="Logo" style="width: 50px; height: 50px;">
+            <h3 style="margin-top: 10px; font-size: 18px;">Medical Dashboard</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+            <li id="dashboard" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="dashboard.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-tachometer-alt" style="margin-right: 10px;"></i> Dashboard
+                </a>
+            </li>
+            <li id="addPatients" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="addpatients.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-plus" style="margin-right: 10px;"></i> Add Patients
+                </a>
+            </li>
+            <li id="appointments" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="appointment.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-calendar-check" style="margin-right: 10px;"></i> Appointment
+                </a>
+            </li>
+
+            <li id="viewLogs" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="#" onclick="loadAuditLogs()"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-clipboard-list" style="margin-right: 10px;"></i> View Logs
+                </a>
+            </li>
+
+            <li id="createAdmin" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="create.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-tie" style="margin-right: 10px;"></i> Create New Admin
+                </a>
+            </li>
+
+            <li id="editUsers" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <a href="edit.html"
+                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                    <i class="fas fa-user-edit" style="margin-right: 10px;"></i> Edit Users/Admin
+                </a>
+            </li>
+
+            <li id="logout" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+                <button onclick="Logout()"
+                    style="width: 100%; background-color: #e74c3c; color: white; padding: 10px; border: none; text-align: left; font-size: 16px; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Log Out
+                </button>
+            </li>
+        </ul>
+
+    </div>
+
+
+
+
+    <div class="container">
+        <h2>Medical Dashboard</h2>
+        <p id="userInfo">Welcome, <span id="fetched"></span> </p>
+
+        <h3>Add New Patient(<span id="urfid"></span>)</h3>
+        <input type="text" id="rfid" placeholder="RFID" disabled>
+        <input type="text" id="first_name" placeholder="First Name">
+        <input type="text" id="middle_name" placeholder="Middle Name">
+        <input type="text" id="last_name" placeholder="Last Name">
+        <input type="number" id="age" placeholder="Age">
+
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
+
+        <select id="suffix">
+            <option value="">Select Suffix</option>
+            <option value="MR">Mr</option>
+            <option value="MRS">Mrs</option>
+            <option value="MISS">Miss</option>
+        </select>
+
+        <select id="relationship_status">
+            <option value="">Select Relationship Status</option>
+            <option value="SINGLE">Single</option>
+            <option value="MARRIED">Married</option>
+            <option value="DIVORCED">Divorced</option>
+        </select>
+
+        <select id="blood_group">
+            <option value="">Select Blood Group</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="AB">AB</option>
+            <option value="O">O</option>
+        </select>
+
+        <select id="rhesus_factor">
+            <option value="">Select Rhesus Factor</option>
+            <option value="+">+</option>
+            <option value="-">-</option>
+        </select>
+
+        <select id="genotype">
+            <option value="">Select Genotype</option>
+            <option value="AA">AA</option>
+            <option value="AC">AC</option>
+            <option value="AS">AS</option>
+            <option value="SC">SC</option>
+            <option value="SS">SS</option>
+        </select>
+
+        <input type="text" id="contact_number" placeholder="Contact Number">
+        <input type="text" id="address" placeholder="Address">
+        <input type="text" id="emergency_contact" placeholder="Emergency Contact">
+        <textarea id="chronic_conditions" placeholder="Chronic Conditions"></textarea>
+        <textarea id="allergies" placeholder="Allergies"></textarea>
+        <textarea id="medical_history" placeholder="Medical History"></textarea>
+
+         <textarea id="diagnosis" placeholder="Previous Diagnosis(if any)"></textarea>
+        <textarea id="medications" placeholder="Previous Medications(if any)"></textarea>
+        <textarea id="testresults" placeholder="Previous Test results(if any)"></textarea>
+        
+        <button onclick="addPatient()">Add Patient</button>
+        <p class="error" id="add-patient-error"></p>
+    </div>
+
+    <div id="messageBox" class="message-box">New User Added successfully!</div>
+
+
+    <script>
+        let currentUserRole;
+        let currentUserName;
+        let log_userrfid;
+        let log_username;
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmhaIhOWWlPYceSdtJScVIIuZP0Rb71hM",
+            authDomain: "project-iot-51262.firebaseapp.com",
+            databaseURL: "https://project-iot-51262-default-rtdb.firebaseio.com",
+            projectId: "project-iot-51262",
+            storageBucket: "project-iot-51262.appspot.com",
+            messagingSenderId: "785303672386",
+            appId: "1:785303672386:web:8fb1aaac3c34e72e87bfdb"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+
+
+        function updateMode() {
+            const statusRef = db.ref("uniib_elect/medical_esp/");
+            statusRef.update({ mode: 1 });
+        }
+
+        function resetrfid() {
+            const statusRef = db.ref("uniib_elect/medical_esp/");
+            statusRef.update({ rfid: "...Waiting For Card..." });
+        }
+
+
+        function getRFID() {
+            const statusRef = db.ref("uniib_elect/medical_esp/");
+
+            // Listen for real-time changes in "status"
+            statusRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const statusData = snapshot.val();
+                    const rfid = statusData.rfid;
+
+                    // Update the input box and span
+                    document.getElementById('rfid').value = rfid;
+                    document.getElementById('urfid').textContent = rfid;
+                }
+            });
+        }
+
+
+
+        function addPatient() {
+            const patientID = document.getElementById('rfid').value.trim();
+            log_userrfid = patientID;
+            if (!patientID) return document.getElementById('add-patient-error').textContent = "RFID is required.";
+
+            const patientData = {
+                administrative_data: {
+                    first_name: document.getElementById('first_name').value.trim(),
+                    middle_name: document.getElementById('middle_name').value.trim(),
+                    last_name: document.getElementById('last_name').value.trim(),
+                    age: document.getElementById('age').value.trim(),
+                    gender: document.getElementById('gender').value.trim(),
+                    suffix: document.getElementById('suffix').value.trim(),
+                    relationship_status: document.getElementById('relationship_status').value.trim(),
+                    blood_group_type: document.getElementById('blood_group').value.trim(),
+                    rhesus_factor: document.getElementById('rhesus_factor').value.trim(),
+                    genotype: document.getElementById('genotype').value.trim(),
+                    contact_number: document.getElementById('contact_number').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    emergency_contact: document.getElementById('emergency_contact').value.trim()
+                },
+                medical_data: {
+                    chronic_conditions: document.getElementById('chronic_conditions').value.trim(),
+                    allergies: document.getElementById('allergies').value.trim(),
+                    medical_history: document.getElementById('medical_history').value.trim(),
+
+                     diagnosis: document.getElementById('diagnosis').value.trim(),
+                    medications: document.getElementById('medications').value.trim(),
+                    test_results: document.getElementById('testresults').value.trim()
+                },
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+
+            db.ref("uniib_elect/medical/patients/" + patientID).set(patientData)
+                .then(() => {
+                    showMessage();
+                    resetrfid();
+                    setTimeout(() => { location.reload(); }, 3000);
+                })
+                .catch(error => { document.getElementById('add-patient-error').textContent = error.message; });
+            const f_name = document.getElementById('first_name').value.trim();
+            const l_name = document.getElementById('last_name').value.trim();
+            log_username = f_name+"_"+l_name;
+             logAction("Added New Patient", log_userrfid+"_"+ log_username);
+
+            const statusRef = db.ref("uniib_elect/medical_esp/patients/" + patientID);
+            // statusRef.update({ name: first_name + last_name});
+
+            statusRef.set({ name: f_name + " " + l_name });
+
+
+        }
+
+
+          function logAction(action, NewPatientID) {
+            const timestamp = new Date().toISOString();
+            const user = currentUserName; //
+            const role = currentUserRole;
+
+            db.ref("uniib_elect/medical/audit_logs").push({
+                timestamp: timestamp,
+                user: user,
+                role: role,
+                action: action,
+                affected_data: NewPatientID
+            });
+        }
+        
+
+        function showMessage() {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.style.display = 'block';
+            setTimeout(() => { messageBox.style.display = 'none'; }, 3000);
+        }
+
+
+
+        window.onload = function () {
+            // const loggedInUser = sessionStorage.getItem('loggedInUser');
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+            if (!loggedInUser) {
+                window.location.href = "index.html"; // Redirect to login if not logged in
+            }
+            else {
+                // const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+                console.log("Username:", loggedInUser.username);
+                console.log("Role:", loggedInUser.role);
+                currentUserRole = loggedInUser.role;  // 
+                currentUserName = loggedInUser.username;  // Default to Administrator
+                let element = document.getElementById("fetched");
+                if (element) {
+                    element.textContent = currentUserRole + " " + currentUserName;
+                }
+
+               
+                updateMode();
+                getRFID();
+                access();
+            }
+        };
+
+
+
+        function access() {
+            // const role = currentUserRole; // Assuming currentUserRole is already set
+
+            const disableItems = {
+                "Administrator": [],
+                "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+                "receptionist": ["createAdmin", "editUsers", "viewLogs"],
+                "director": ["editUsers", "createAdmin", "addPatients"],
+                "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+                "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+            };
+
+            disableItems[currentUserRole]?.forEach(id => {
+                let item = document.getElementById(id);
+                if (item) {
+                    item.style.pointerEvents = "none"; // Disable clicking
+                    item.style.opacity = "0.5"; // Make it look disabled
+                }
+            });
+
+        }
+              
+      
+
+
+        // Logout function
+        function Logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = "index.html"; // Redirect to login after logout
+        }
+
+
+    </script>
+</body>
+
+</html>

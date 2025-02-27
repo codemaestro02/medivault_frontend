@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Medical System</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 128, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+     <!-- Sidebar -->
+     <div id="sidebar"
+     style="height: 100%; width: 250px; position: fixed; top: 0; left: 0; background-color: #2c3e50; color: white; padding: 20px 0;">
+     <div style="text-align: center; padding: 20px;">
+         <img src="logo.jpg" alt="Logo" style="width: 50px; height: 50px;">
+         <h3 style="margin-top: 10px; font-size: 18px;">Medical Dashboard</h3>
+     </div>
+     <ul style="list-style: none; padding: 0;">
+         <li id="dashboard" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="dashboard.html"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-tachometer-alt" style="margin-right: 10px;"></i> Dashboard
+             </a>
+         </li>
+         <li id="addPatients" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="addpatients.html"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-user-plus" style="margin-right: 10px;"></i> Add Patients
+             </a>
+         </li>
+         <li id="appointments" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="appointment.html"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-calendar-check" style="margin-right: 10px;"></i> Appointment
+             </a>
+         </li>
+
+         <li id="viewLogs" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="#" onclick="loadAuditLogs()"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-clipboard-list" style="margin-right: 10px;"></i> View Logs
+             </a>
+         </li>
+
+         <li id="createAdmin" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="create.html"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-user-tie" style="margin-right: 10px;"></i> Create New Admin
+             </a>
+         </li>
+
+         <li id="editUsers" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <a href="edit.html"
+                 style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                 <i class="fas fa-user-edit" style="margin-right: 10px;"></i> Edit Users/Admin
+             </a>
+         </li>
+
+         <li id="logout" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+             <button onclick="Logout()"
+                 style="width: 100%; background-color: #e74c3c; color: white; padding: 10px; border: none; text-align: left; font-size: 16px; cursor: pointer;">
+                 <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Log Out
+             </button>
+         </li>
+     </ul>
+
+ </div>
+
+<!-- User Registration Form -->
+<div class="container">
+    <h2>Manage Users</h2>
+    <table id="userTable" border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userList">
+            <!-- Users will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+
+  
+
+    <script>
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmhaIhOWWlPYceSdtJScVIIuZP0Rb71hM",
+            authDomain: "project-iot-51262.firebaseapp.com",
+            databaseURL: "https://project-iot-51262-default-rtdb.firebaseio.com",
+            projectId: "project-iot-51262",
+            storageBucket: "project-iot-51262.appspot.com",
+            messagingSenderId: "785303672386",
+            appId: "1:785303672386:web:8fb1aaac3c34e72e87bfdb"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+    
+
+        let currentUserRole;
+        let currentUserName;
+        window.onload = function () {
+            // const loggedInUser = sessionStorage.getItem('loggedInUser');
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+            if (!loggedInUser) {
+                window.location.href = "index.html"; // Redirect to login if not logged in
+            }
+            else {
+                // const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+                console.log("Username:", loggedInUser.username);
+                console.log("Role:", loggedInUser.role);
+                currentUserRole = loggedInUser.role;  // 
+                currentUserName = loggedInUser.username;  // Default to Administrator
+                let element = document.getElementById("fetched");
+                if (element) {
+                    element.textContent = currentUserRole + " " + currentUserName;
+                }
+
+                access();
+            }
+        };
+
+
+        function access() {
+            // const role = currentUserRole; // Assuming currentUserRole is already set
+
+            const disableItems = {
+                "Administrator": [],
+                "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+                "receptionist": ["createAdmin", "editUsers", "viewLogs"],
+                "director": ["editUsers", "createAdmin", "addPatients"],
+                "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+                "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+            };
+
+            disableItems[currentUserRole]?.forEach(id => {
+                let item = document.getElementById(id);
+                if (item) {
+                    item.style.pointerEvents = "none"; // Disable clicking
+                    item.style.opacity = "0.5"; // Make it look disabled
+                }
+            });
+
+        }      
+
+
+        function loadUsers() {
+        const userRef = db.ref("uniib_elect/medical/admins");
+
+        userRef.once("value", (snapshot) => {
+            const userList = document.getElementById("userList");
+            userList.innerHTML = ""; // Clear previous data
+
+            snapshot.forEach((childSnapshot) => {
+                const user = childSnapshot.val();
+                const name = childSnapshot.key;
+                const role = user.role;
+
+                // Add row to table
+                const row = `<tr>
+                    <td>${name}</td>
+                    <td>${role}</td>
+                    <td>
+                        <button onclick="editUser('${name}', '${role}')">Edit</button>
+                        <button onclick="deleteUser('${name}')">Delete</button>
+                    </td>
+                </tr>`;
+                userList.innerHTML += row;
+            });
+        });
+    }
+
+    // Call function when the page loads
+    window.onload = loadUsers;
+
+
+    function deleteUser(name) {
+        if (confirm(`Are you sure you want to delete ${name}?`)) {
+            db.ref("uniib_elect/medical/admins/" + name).remove()
+                .then(() => {
+                    alert("User deleted successfully.");
+                    loadUsers(); // Refresh the table
+                })
+                .catch((error) => console.error("Error deleting user: ", error));
+        }
+    }
+
+
+ 
+    function editUser(name, currentRole) {
+        const newRole = prompt(`Edit role for ${name}:`, currentRole);
+        if (newRole && newRole !== currentRole) {
+            db.ref("uniib_elect/medical/admins/" + name).update({ role: newRole })
+                .then(() => {
+                    alert("User updated successfully.");
+                    loadUsers(); // Refresh table
+                })
+                .catch((error) => console.error("Error updating user: ", error));
+        }
+    }
+
+        // Logout function
+        function Logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = "index.html"; // Redirect to login after logout
+        }
+    </script>
+</body>
+
+</html>
