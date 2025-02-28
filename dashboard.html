@@ -602,10 +602,13 @@
         });
 
         const populateAppointmentForm = (appointment) => {
-            document.getElementById("appointmentTime").textContent = appointment.time || "N/A";
-            document.getElementById("appointmentDate").textContent = appointment.date || "N/A";
-            document.getElementById("appointmentDoctor").textContent = appointment.doctor || "N/A";
-            document.getElementById("appointmentStatus").textContent = appointment.status || "N/A";
+            document.getElementById("appointmentTime").value = appointment.time || "N/A";
+            document.getElementById("appointmentDate").value = appointment.date || "N/A";
+            document.getElementById("appointmentDoctor").value = appointment.doctor || "N/A";
+            document.getElementById("appointmentStatus").value = appointment.status || "N/A";
+            // Log for debugging
+            console.log("Appointment data populated into the form:", appointment);
+
         }
 
 
