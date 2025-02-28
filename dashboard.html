@@ -597,13 +597,9 @@
         };
 
             // Use the function
-        findAndDisplayAppointment(rfid);
-        //     if (appointmentId) {
-        //         console.log("Appointment ID:", appointmentId);
-        //     } else {
-        //         console.log("No matching appointment found.");
-        //     }
-        // });
+        document.addEventListener("DOMContentLoaded", () => {
+            findAndDisplayAppointment(rfid);
+        });
 
         const populateAppointmentForm = (appointment) => {
             document.getElementById("appointmentTime").textContent = appointment.time || "N/A";
