@@ -213,6 +213,13 @@ h3 {
         <label id="age_label">Age: <input type="text" id="age"></label>
         <label id="gender_label">Gender: <input type="text" id="gender"></label>
         <label id="contact_number_label">Contact Number: <input type="text" id="contact_number"></label>
+        <label id="appointment_status_label">Appointment Status:
+            <select id="appointment_status">
+                <option value="ACTIVE">Active</option>
+                <option value="PENDING">Pending</option>
+                <option value="EXPIRED">Expired</option>
+            </select>
+        </label>
     </div>
 
     <div id="medicalSection">
@@ -230,7 +237,7 @@ h3 {
     
 
 </div>
-     <button type="button" onclick="demo()">TEST DETAILS</button>
+<!--     <button type="button" onclick="demo()">TEST DETAILS</button>-->
 
   
 
@@ -316,6 +323,7 @@ access();
                 document.getElementById("age").value = administrativeData.age;
                 document.getElementById("gender").value = administrativeData.gender;
                 document.getElementById("contact_number").value = administrativeData.contact_number;
+                document.getElementById("appointment_status").value = administrativeData.appointment_status;
                 document.getElementById("allergies").value = medicalData.allergies;
                 document.getElementById("chronic_conditions").value = medicalData.chronic_conditions;
                 document.getElementById("diagnosis").value = medicalData.diagnosis;

@@ -563,7 +563,7 @@
 
         if (!rfid) return;
 
-        const findAppointmentByRFID = async (rfid) => {
+        const findAndDisplayAppointment = async (rfid) => {
             // Reference to the Firebase Realtime Database path
             const appointmentRef = database.ref("uniib_elect/medical/appointments");
 
@@ -578,7 +578,9 @@
                     for (const appointmentId in data) {
                         if (data[appointmentId].rfid === rfid) {
                             console.log("Found appointment ID:", appointmentId);
-                            return appointmentId; // Found the ID
+                            const appointment = data[appointmentId];
+                            populateAppointmentForm(appointment); // Call function to populate form
+                            return;     // Found the ID
                         }
                     }
 
@@ -595,17 +597,23 @@
         };
 
             // Use the function
-        const appointment = findAppointmentByRFID(rfid).then((appointmentId) => {
-            if (appointmentId) {
-                console.log("Appointment ID:", appointmentId);
-            } else {
-                console.log("No matching appointment found.");
-            }
-        });
+        findAndDisplayAppointment(rfid);
+        //     if (appointmentId) {
+        //         console.log("Appointment ID:", appointmentId);
+        //     } else {
+        //         console.log("No matching appointment found.");
+        //     }
+        // });
+
+        const populateAppointmentForm = (appointment) => {
+            document.getElementById("appointmentTime").value = appointment.time || "N/A";
+            document.getElementById("appointmentDate").value = appointment.date || "N/A";
+            document.getElementById("appointmentDoctor").value = appointment.doctor || "N/A";
+            document.getElementById("appointmentStatus").value = appointment.status || "N/A";
+        }
 
 
-
-        database.ref("uniib_elect/medical/patients/" + rfid).once("value").then((snapshot) => {
+            database.ref("uniib_elect/medical/patients/" + rfid).once("value").then((snapshot) => {
             if (snapshot.exists()) {
                 const patientData = snapshot.val();
                 const administrativeData = patientData.administrative_data;
@@ -634,17 +642,13 @@
                 const medications = medicalData.medications || "";
                 const surgeries = medicalData.surgeries || "";
                 const test_results = medicalData.test_results || "";
-                const appointment_date = appointment.date || "";
-                const appointment_doctor = appointment.doctor || "";
-                const appointment_time = appointment.time || "";
-                const appointment_status = appointment.status || "";
 
                 // Display data in modal
                 showPatientModal({
                     fullName, address, age, blood_group_type, contact_number, gender, genotype,
                     relationship_status, rhesus_factor, suffix, allergies, chronic_conditions,
                     medical_history, created_at, updated_at, diagnosis, medications,
-                    surgeries, test_results, appointment_status, appointment_date, appointment_time, appointment_doctor
+                    surgeries, test_results,
                 });
             } else {
                 alert("Patient not found for this RFID!.");
@@ -680,11 +684,10 @@
             <tr><td>Medical History</td><td>${data.medical_history}</td></tr>
             <tr><td>Created At</td><td>${data.created_at}</td></tr>
             <tr><td>Updated At</td><td>${data.updated_at}</td></tr>
-            <tr><td>Appointment Time</td><td>${data.appointment_time}</td></tr>
-            <tr><td>Appointment Date</td><td>${data.appointment_date}</td></tr>
-            <tr><td>Appointment Status</td><td>${data.appointment_status}</td></tr>
-            <tr><td>Appointment Doctor</td><td>${data.appointment_doctor}</td></tr>
-
+            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
+            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
+            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
+            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
         `;
         } else if (currentUserRole === "doctor") {
             tableContent += `
@@ -700,6 +703,10 @@
             <tr><td>Medications</td><td>${data.medications}</td></tr>
             <tr><td>Diagnosis</td><td>${data.diagnosis}</td></tr>
             <tr><td>Test Results</td><td>${data.test_results}</td></tr>
+            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
+            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
+            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
+            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
 
         `;
         } else if (currentUserRole === "receptionist") {
@@ -708,6 +715,10 @@
             <tr><td>Address</td><td>${data.address}</td></tr>
             <tr><td>Relationship Status</td><td>${data.relationship_status}</td></tr>
             <tr><td>Contact Number</td><td>${data.contact_number}</td></tr>
+            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
+            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
+            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
+            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
         `;
         } else if (currentUserRole === "pharmacist") {
             tableContent += `
