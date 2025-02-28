@@ -703,10 +703,6 @@
             <tr><td>Medical History</td><td>${data.medical_history}</td></tr>
             <tr><td>Created At</td><td>${data.created_at}</td></tr>
             <tr><td>Updated At</td><td>${data.updated_at}</td></tr>
-            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
-            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
-            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
-            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
         `;
         } else if (currentUserRole === "doctor") {
             tableContent += `
@@ -722,10 +718,6 @@
             <tr><td>Medications</td><td>${data.medications}</td></tr>
             <tr><td>Diagnosis</td><td>${data.diagnosis}</td></tr>
             <tr><td>Test Results</td><td>${data.test_results}</td></tr>
-            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
-            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
-            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
-            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
 
         `;
         } else if (currentUserRole === "receptionist") {
@@ -734,10 +726,6 @@
             <tr><td>Address</td><td>${data.address}</td></tr>
             <tr><td>Relationship Status</td><td>${data.relationship_status}</td></tr>
             <tr><td>Contact Number</td><td>${data.contact_number}</td></tr>
-            <tr><td>Appointment Time</td><td id="appointmentTime"></td></tr>
-            <tr><td>Appointment Date</td><td id="appointmentDate"></td></tr>
-            <tr><td>Appointment Status</td><td id="appointmentStatus"></td></tr>
-            <tr><td>Appointment Doctor</td><td id="appointmentDoctor"></td></tr>
         `;
         } else if (currentUserRole === "pharmacist") {
             tableContent += `
