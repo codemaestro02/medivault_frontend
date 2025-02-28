@@ -256,6 +256,11 @@
         <table id="patientTable">
             <!-- Table will be filled dynamically -->
         </table>
+        <h1>Appointment Details</h1>
+        <div id="appointmentContainer">
+            <p>Loading appointment data...</p>
+        </div>
+
     </div>
 </div>
 
@@ -579,40 +584,55 @@
                         if (data[appointmentId].rfid === rfid) {
                             console.log("Found appointment ID:", appointmentId);
                             const appointment = data[appointmentId];
-                            populateAppointmentForm(appointment); // Call function to populate form
+                            updateAppointmentContainer(appointment);
                             return;     // Found the ID
                         }
                     }
-
                     console.log("No appointment found for the provided RFID.");
-                    return null; // RFID not found
+                    // RFID not found
+                    updateAppointmentContainer(null);
+
                 } else {
                     console.log("No appointments found in the database.");
-                    return null;
+                    updateAppointmentContainer(null);
                 }
             } catch (error) {
                 console.error("Error retrieving appointments:", error);
-                throw error;
+                updateAppointmentContainer(null, error);
             }
         };
 
-            // Use the function
-        // document.addEventListener("DOMContentLoaded", () => {
+        // Use the function
+        document.addEventListener("DOMContentLoaded", () => {
             findAndDisplayAppointment(rfid);
-        // });
+        });
 
-        const populateAppointmentForm = (appointment) => {
-            document.getElementById("appointmentTime").value = appointment.time || "N/A";
-            document.getElementById("appointmentDate").value = appointment.date || "N/A";
-            document.getElementById("appointmentDoctor").value = appointment.doctor || "N/A";
-            document.getElementById("appointmentStatus").value = appointment.status || "N/A";
-            // Log for debugging
-            console.log("Appointment data populated into the form:", appointment);
+        const updateAppointmentContainer = (appointment, error = null) => {
+            const container = document.getElementById("appointmentContainer");
 
-        }
+            if (error) {
+                container.innerHTML = `<p style="color: red;">Error fetching appointment: ${error.message}</p>`;
+                return;
+            }
+
+            if (!appointment) {
+                container.innerHTML = `<p style="color: red;">No appointment found for the provided RFID.</p>`;
+                return;
+            }
+
+            // Dynamically inject the data into the container
+            container.innerHTML = `
+        <h2>Appointment Details</h2>
+        <p><strong>Appointment Time</strong> ${appointment.time || "N/A"}</p>
+        <p><strong>Appointment Date:</strong> ${appointment.date || "N/A"}</p>
+        <p><strong>Doctor Name:</strong> ${appointment.doctor || "N/A"}</p>
+        <p><strong>Appointment Status:</strong></p>
+        <p>${appointment.status || "N/A"}</p>
+    `;
+        };
 
 
-            database.ref("uniib_elect/medical/patients/" + rfid).once("value").then((snapshot) => {
+        database.ref("uniib_elect/medical/patients/" + rfid).once("value").then((snapshot) => {
             if (snapshot.exists()) {
                 const patientData = snapshot.val();
                 const administrativeData = patientData.administrative_data;
