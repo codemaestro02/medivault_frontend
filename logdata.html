@@ -83,57 +83,57 @@
 
 
         /* Hide all fields by default */
-label {
-    display: none;
-}
+        label {
+            display: none;
+        }
 
-/* Show only the allowed fields dynamically using JavaScript */
-label.show {
-    display: block;
-}
+        /* Show only the allowed fields dynamically using JavaScript */
+        label.show {
+            display: block;
+        }
 
-/* Style the form */
-form {
-    width: 60%;
-    margin: auto;
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
+        /* Style the form */
+        form {
+            width: 60%;
+            margin: auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-/* Input fields */
-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        /* Input fields */
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-/* Headings */
-h3 {
-    color: #2c3e50;
-    border-bottom: 2px solid #34495e;
-    padding-bottom: 5px;
-}
+        /* Headings */
+        h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #34495e;
+            padding-bottom: 5px;
+        }
 
-/* Save Button */
-#saveBtn {
-    width: 100%;
-    background: #27ae60;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    display: none; /* Initially hidden */
-}
+        /* Save Button */
+        #saveBtn {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none; /* Initially hidden */
+        }
 
-#saveBtn:hover {
-    background: #219150;
-}
+        #saveBtn:hover {
+            background: #219150;
+        }
 
 
 
@@ -144,163 +144,163 @@ h3 {
 
 <body>
 
-    <!-- Sidebar -->
-    <div id="sidebar"
-        style="height: 100%; width: 250px; position: fixed; top: 0; left: 0; background-color: #2c3e50; color: white; padding: 20px 0;">
-        <div style="text-align: center; padding: 20px;">
-            <img src="logo.jpg" alt="Logo" style="width: 50px; height: 50px;">
-            <h3 style="margin-top: 10px; font-size: 18px;">Medical Dashboard</h3>
-        </div>
-        <ul style="list-style: none; padding: 0;">
-            <li id="dashboard" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="dashboard.html"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-tachometer-alt" style="margin-right: 10px;"></i> Dashboard
-                </a>
-            </li>
-            <li id="addPatients" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="addpatients.html"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-user-plus" style="margin-right: 10px;"></i> Add Patients
-                </a>
-            </li>
-            <li id="appointments" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="appointment.html"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-calendar-check" style="margin-right: 10px;"></i> Appointment
-                </a>
-            </li>
-
-            <li id="viewLogs" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="#" onclick="loadAuditLogs()"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-clipboard-list" style="margin-right: 10px;"></i> View Logs
-                </a>
-            </li>
-
-            <li id="createAdmin" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="create.html"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-user-tie" style="margin-right: 10px;"></i> Create New Admin
-                </a>
-            </li>
-
-            <li id="editUsers" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <a href="edit.html"
-                    style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
-                    <i class="fas fa-user-edit" style="margin-right: 10px;"></i> Edit Users/Admin
-                </a>
-            </li>
-
-            <li id="logout" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
-                <button onclick="Logout()"
-                    style="width: 100%; background-color: #e74c3c; color: white; padding: 10px; border: none; text-align: left; font-size: 16px; cursor: pointer;">
-                    <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Log Out
-                </button>
-            </li>
-        </ul>
-
+<!-- Sidebar -->
+<div id="sidebar"
+     style="height: 100%; width: 250px; position: fixed; top: 0; left: 0; background-color: #2c3e50; color: white; padding: 20px 0;">
+    <div style="text-align: center; padding: 20px;">
+        <img src="logo.jpg" alt="Logo" style="width: 50px; height: 50px;">
+        <h3 style="margin-top: 10px; font-size: 18px;">Medical Dashboard</h3>
     </div>
+    <ul style="list-style: none; padding: 0;">
+        <li id="dashboard" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="dashboard.html"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-tachometer-alt" style="margin-right: 10px;"></i> Dashboard
+            </a>
+        </li>
+        <li id="addPatients" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="addpatients.html"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-user-plus" style="margin-right: 10px;"></i> Add Patients
+            </a>
+        </li>
+        <li id="appointments" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="appointment.html"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-calendar-check" style="margin-right: 10px;"></i> Appointment
+            </a>
+        </li>
+
+        <li id="viewLogs" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="#" onclick="loadAuditLogs()"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-clipboard-list" style="margin-right: 10px;"></i> View Logs
+            </a>
+        </li>
+
+        <li id="createAdmin" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="create.html"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-user-tie" style="margin-right: 10px;"></i> Create New Admin
+            </a>
+        </li>
+
+        <li id="editUsers" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <a href="edit.html"
+               style="color: white; text-decoration: none; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-user-edit" style="margin-right: 10px;"></i> Edit Users/Admin
+            </a>
+        </li>
+
+        <li id="logout" style="padding: 15px 20px; border-bottom: 1px solid #34495e;">
+            <button onclick="Logout()"
+                    style="width: 100%; background-color: #e74c3c; color: white; padding: 10px; border: none; text-align: left; font-size: 16px; cursor: pointer;">
+                <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Log Out
+            </button>
+        </li>
+    </ul>
+
+</div>
 
 <!-- User Registration Form -->
 <div class="container">
 
-  <form id="editPatientForm">
-    <div id="adminSection">
-        <h3>Administrative Data</h3>
-        <label id="first_name_label">First Name: <input type="text" id="first_name"></label>
-        <label id="last_name_label">Last Name: <input type="text" id="last_name"></label>
-        <label id="age_label">Age: <input type="text" id="age"></label>
-        <label id="gender_label">Gender: <input type="text" id="gender"></label>
-        <label id="contact_number_label">Contact Number: <input type="text" id="contact_number"></label>
-    </div>
+    <form id="editPatientForm">
+        <div id="adminSection">
+            <h3>Administrative Data</h3>
+            <label id="first_name_label">First Name: <input type="text" id="first_name"></label>
+            <label id="last_name_label">Last Name: <input type="text" id="last_name"></label>
+            <label id="age_label">Age: <input type="text" id="age"></label>
+            <label id="gender_label">Gender: <input type="text" id="gender"></label>
+            <label id="contact_number_label">Contact Number: <input type="text" id="contact_number"></label>
+        </div>
 
-    <div id="medicalSection">
-        <h3>Medical Data</h3>
-        <label id="allergies_label">Allergies: <textarea id="allergies" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
-        <label id="chronic_conditions_label">Chronic Conditions: <textarea id="chronic_conditions" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
-        <label id="diagnosis_label">Diagnosis: <textarea id="diagnosis" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
-        <label id="medications_label">Medications: <textarea id="medications" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
-        <label id="testresults_label">Test Results: <textarea id="testresults" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
-    </div>
+        <div id="medicalSection">
+            <h3>Medical Data</h3>
+            <label id="allergies_label">Allergies: <textarea id="allergies" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
+            <label id="chronic_conditions_label">Chronic Conditions: <textarea id="chronic_conditions" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
+            <label id="diagnosis_label">Diagnosis: <textarea id="diagnosis" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
+            <label id="medications_label">Medications: <textarea id="medications" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
+            <label id="testresults_label">Test Results: <textarea id="testresults" style="width: 100%; height: 100px; resize: vertical;"></textarea></label>
+        </div>
 
-    <button type="button" id="saveBtn" style="display: none;" onclick="saveChanges()">Save</button>
-</form>
+        <button type="button" id="saveBtn" style="display: none;" onclick="saveChanges()">Save</button>
+    </form>
 
-    
+
 
 </div>
-     <button type="button" onclick="demo()">TEST DETAILS</button>
-
-  
-
-    <script>
-      let currentUserRole;
-        let currentUserName;
-        let log_userrfid;
-        let log_username;    
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyAmhaIhOWWlPYceSdtJScVIIuZP0Rb71hM",
-            authDomain: "project-iot-51262.firebaseapp.com",
-            databaseURL: "https://project-iot-51262-default-rtdb.firebaseio.com",
-            projectId: "project-iot-51262",
-            storageBucket: "project-iot-51262.appspot.com",
-            messagingSenderId: "785303672386",
-            appId: "1:785303672386:web:8fb1aaac3c34e72e87bfdb"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-    
-
-  
-        window.onload = function () {
-            // const loggedInUser = sessionStorage.getItem('loggedInUser');
-            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-
-            if (!loggedInUser) {
-                window.location.href = "index.html"; // Redirect to login if not logged in
-            }
-            else {
-                // const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-                console.log("Username:", loggedInUser.username);
-                console.log("Role:", loggedInUser.role);
-                currentUserRole = loggedInUser.role;  // 
-                currentUserName = loggedInUser.username;  // Default to Administrator
-                let element = document.getElementById("fetched");
-                if (element) {
-                    element.textContent = currentUserRole + " " + currentUserName;
-                }
-access();
-                getRFID();
-            }
-        };
+<button type="button" onclick="demo()">TEST DETAILS</button>
 
 
-        
-        function access() {
-            // const role = currentUserRole; // Assuming currentUserRole is already set
 
-            const disableItems = {
-                "Administrator": [],
-                "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
-                "receptionist": ["createAdmin", "editUsers", "viewLogs"],
-                "director": ["editUsers", "createAdmin", "addPatients"],
-                "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
-                "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
-            };
+<script>
+    let currentUserRole;
+    let currentUserName;
+    let log_userrfid;
+    let log_username;
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmhaIhOWWlPYceSdtJScVIIuZP0Rb71hM",
+        authDomain: "project-iot-51262.firebaseapp.com",
+        databaseURL: "https://project-iot-51262-default-rtdb.firebaseio.com",
+        projectId: "project-iot-51262",
+        storageBucket: "project-iot-51262.appspot.com",
+        messagingSenderId: "785303672386",
+        appId: "1:785303672386:web:8fb1aaac3c34e72e87bfdb"
+    };
 
-            disableItems[currentUserRole]?.forEach(id => {
-                let item = document.getElementById(id);
-                if (item) {
-                    item.style.pointerEvents = "none"; // Disable clicking
-                    item.style.opacity = "0.5"; // Make it look disabled
-                }
-            });
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
+
+
+
+    window.onload = function () {
+        // const loggedInUser = sessionStorage.getItem('loggedInUser');
+        const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+        if (!loggedInUser) {
+            window.location.href = "index.html"; // Redirect to login if not logged in
         }
+        else {
+            // const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            console.log("Username:", loggedInUser.username);
+            console.log("Role:", loggedInUser.role);
+            currentUserRole = loggedInUser.role;  //
+            currentUserName = loggedInUser.username;  // Default to Administrator
+            let element = document.getElementById("fetched");
+            if (element) {
+                element.textContent = currentUserRole + " " + currentUserName;
+            }
+            access();
+            getRFID();
+        }
+    };
+
+
+
+    function access() {
+        // const role = currentUserRole; // Assuming currentUserRole is already set
+
+        const disableItems = {
+            "Administrator": [],
+            "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+            "receptionist": ["createAdmin", "editUsers", "viewLogs"],
+            "director": ["editUsers", "createAdmin", "addPatients"],
+            "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+            "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
+        };
+
+        disableItems[currentUserRole]?.forEach(id => {
+            let item = document.getElementById(id);
+            if (item) {
+                item.style.pointerEvents = "none"; // Disable clicking
+                item.style.opacity = "0.5"; // Make it look disabled
+            }
+        });
+
+    }
 
 
     function loadPatientData(rfid) {
@@ -350,7 +350,7 @@ access();
 
     function saveChanges() {
         let updatedData = {};
-        
+
         if (["Administrator", "receptionist", "director"].includes(currentUserRole)) {
             updatedData["administrative_data"] = {
                 first_name: document.getElementById("first_name").value,
@@ -369,70 +369,70 @@ access();
             };
         }
 
-log_userrfid = rfid;
+        log_userrfid = rfid;
         log_username = document.getElementById("first_name").value;
-        
-     logAction("Edited Medical Record", log_userrfid+"_"+ log_username);
-                            
-        
+
+        logAction("Edited Medical Record", log_userrfid+"_"+ log_username);
+
+
         database.ref("uniib_elect/medical/patients/" + rfid).update(updatedData)
             .then(() => alert("Patient data updated successfully"))
             .catch(error => console.error("Update failed:", error));
     }
 
 
-        function logAction(action, patientID) {
-            const timestamp = new Date().toISOString();
-            const user = currentUserName; //
-            const role = currentUserRole;
+    function logAction(action, patientID) {
+        const timestamp = new Date().toISOString();
+        const user = currentUserName; //
+        const role = currentUserRole;
 
-            database.ref("uniib_elect/medical/audit_logs").push({
-                timestamp: timestamp,
-                user: user,
-                role: role,
-                action: action,
-                affected_data: patientID
-            });
-        }  
+        database.ref("uniib_elect/medical/audit_logs").push({
+            timestamp: timestamp,
+            user: user,
+            role: role,
+            action: action,
+            affected_data: patientID
+        });
+    }
 
     let rfid;
 
     function getRFID() {
-            const statusRef = database.ref("uniib_elect/medical_esp/");
+        const statusRef = database.ref("uniib_elect/medical_esp/");
 
-            // Listen for changes in "rfid"
-            statusRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const statusData = snapshot.val();
-                     rfid = statusData.rfid;
+        // Listen for changes in "rfid"
+        statusRef.on('value', (snapshot) => {
+            if (snapshot.exists()) {
+                const statusData = snapshot.val();
+                rfid = statusData.rfid;
 
-                    if (rfid != "...Waiting For Card...") {
-                        loadPatientData(rfid);
-                    }
-
+                if (rfid != "...Waiting For Card...") {
+                    loadPatientData(rfid);
                 }
-            });
-        }
+
+            }
+        });
+    }
     // Load patient data on page load
     // window.onload = getRFID;
 
 
 
     // Call function when the page loads
-//    window.onload = loadUsers;
+    //    window.onload = loadUsers;
 
-        // Logout function
-        function Logout() {
-            sessionStorage.removeItem('loggedInUser');
-            window.location.href = "index.html"; // Redirect to login after logout
-        }
+    // Logout function
+    function Logout() {
+        sessionStorage.removeItem('loggedInUser');
+        window.location.href = "index.html"; // Redirect to login after logout
+    }
 
 
-          function demo() {
-            const statusRef = database.ref("uniib_elect/medical_esp/");
-            statusRef.update({ rfid: "54F056F9" });
-        }
-    </script>
+    function demo() {
+        const statusRef = database.ref("uniib_elect/medical_esp/");
+        statusRef.update({ rfid: "54F056F9" });
+    }
+</script>
 </body>
 
 </html>
