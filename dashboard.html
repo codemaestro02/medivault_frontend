@@ -603,7 +603,9 @@
         };
 
         // Use the function
-        findAndDisplayAppointment(rfid);
+        document.addEventListener("DOMContentLoaded", () => {
+            findAndDisplayAppointment(rfid);
+        });
 
         const updateAppointmentContainer = (appointment, error = null) => {
             const container = document.getElementById("appointmentContainer");
