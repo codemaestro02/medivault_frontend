@@ -330,10 +330,10 @@
     };
 
     // Use the function
-    document.addEventListener("DOMContentLoaded", () => {
+    window.onload = function() {
         console.log("RFID before calling findAndEditAppointment:", rfid);
         findAndEditAppointment(rfid);
-    });
+    };
 
     const updateAppointmentContainer = (appointmentId, appointment) => {
         const container = document.getElementById("appointment_status_label");
