@@ -578,8 +578,8 @@
                     for (const appointmentId in data) {
                         if (data[appointmentId].rfid === rfid) {
                             console.log("Found appointment ID:", appointmentId);
-                            // const appointment = data[appointmentId];
-                            populateAppointmentForm(data[appointmentId]); // Call function to populate form
+                            const appointment = data[appointmentId];
+                            populateAppointmentForm(appointment); // Call function to populate form
                             return;     // Found the ID
                         }
                     }
