@@ -219,7 +219,7 @@
     <input type="text" id="searchInput" placeholder="Enter RFID or Patient Name">
     <button onclick="searchPatient()">Search</button>
     <p class="error" id="error-message"></p>
-    <button onclick="logDatas()">LogDatas</button>
+    <button id="logData" onclick="logDatas()">LogDatas</button>
     <!-- Patient Details -->
     <div class="patient-data" id="patientData"></div>
 
@@ -312,8 +312,8 @@
         const disableItems = {
             "Administrator": [],
             "doctor": ["createAdmin", "editUsers", "viewLogs", "addPatients"],
-            "receptionist": ["createAdmin", "editUsers", "viewLogs"],
-            "director": ["editUsers", "createAdmin", "addPatients"],
+            "receptionist": ["createAdmin", "editUsers", "viewLogs", "logData"],
+            "director": ["editUsers", "createAdmin", "addPatients", "logData", "appointments"],
             "pharmacist": ["createAdmin", "editUsers", "viewLogs", "addPatients", "appointments"],
             "labTech": ["createAdmin", "editUsers", "viewLogs", "addPatients", "appointments"],
         };
